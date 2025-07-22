@@ -15,7 +15,7 @@ import io
 
 from job_apply_ai.scraper.linkedin import LinkedInScraper
 from job_apply_ai.cv_modifier.cv_analyzer import CVAnalyzer, CVModifier, batch_process_jobs
-from job_apply_ai.utils.helpers import ensure_directory_exists
+from job_apply_ai.utils.helpers import ensure_directory_exists, sanitize_filename
 
 # Configure logging
 logging.basicConfig(
@@ -226,8 +226,8 @@ def make_cv(job_id):
         if modifier.update_skills_section(matched_categories):
             # Save the modified CV
             today_date = datetime.today().strftime("%Y-%m-%d")
-            safe_company = job['company'].replace(' ', '_')
-            safe_title = job['title'].replace(' ', '_')
+            safe_company = sanitize_filename(job['company'])
+            safe_title = sanitize_filename(job['title'])
             output_filename = f"CV_{today_date}_{safe_company}_{safe_title}.docx"
             output_path = os.path.join(app.config['CV_OUTPUT_DIR'], output_filename)
             
@@ -307,8 +307,8 @@ def make_all_cvs():
             if modifier.update_skills_section(matched_categories):
                 # Save the modified CV
                 today_date = datetime.today().strftime("%Y-%m-%d")
-                safe_company = job['company'].replace(' ', '_')
-                safe_title = job['title'].replace(' ', '_')
+                safe_company = sanitize_filename(job['company'])
+                safe_title = sanitize_filename(job['title'])
                 output_filename = f"CV_{today_date}_{safe_company}_{safe_title}.docx"
                 output_path = os.path.join(app.config['CV_OUTPUT_DIR'], output_filename)
                 
